@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Form, Input, Button, Row, Col, Select, DatePicker } from 'antd';
 import { useSelector } from 'react-redux';
-import { createT } from '../../../utils/i18n';
+import { createT } from '@/utils/i18n';
 
 const { Option } = Select;
 const { TextArea } = Input;

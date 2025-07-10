@@ -21,7 +21,7 @@ import {
 import { logout } from '../../models/user';
 import { toggleTheme } from '../../models/theme';
 import { setLocale } from '../../models/locale';
-import { createT } from '../../utils/i18n';
+import { createT } from '@/utils/i18n';
 import TabBar from '../TabBar';
 import ThemeSettings from '../ThemeSettings';
 import LanguageSettings from '../LanguageSettings';

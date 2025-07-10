@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Form, Select, Switch, Slider, ColorPicker, Space, Divider } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { setTheme, setPrimaryColor, setBorderRadius, setCompact } from '../../models/theme';
-import { createT } from '../../utils/i18n';
+import { createT } from '@/utils/i18n';
 
 const { Option } = Select;
 

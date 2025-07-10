@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Form, Radio, Space } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { setLocale } from '../../models/locale';
-import { getSupportedLocales, createT } from '../../utils/i18n';
+import { getSupportedLocales, createT } from '@/utils/i18n';
 
 const LanguageSettings = ({ visible, onCancel }) => {
   const dispatch = useDispatch();
