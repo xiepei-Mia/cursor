@@ -117,6 +117,29 @@ const Layout = ({ children }) => {
     ),
     onClick: () => handleSearchItemClick(item),
   }));
+
+  // 顶部菜单项
+  const topMenuItems = topMenus.map(menu => {
+    const IconComponent = iconMap[menu.icon];
+    return {
+      key: menu.key,
+      icon: IconComponent && <IconComponent />,
+      label: menu.label,
+      onClick: () => handleTopMenuClick(menu.key),
+    };
+  });
+
+  // 左侧菜单项
+  const leftMenuItems = subMenus.map(subMenu => ({
+    key: subMenu.key,
+    label: subMenu.label,
+    onClick: () => handleSubMenuClick({ key: subMenu.key }),
+    children: subMenu.children?.map(item => ({
+      key: item.key,
+      label: item.label,
+      onClick: () => navigate(item.path),
+    })),
+  }));
   
   return (
     <AntLayout style={{ height: '100vh' }}>
@@ -140,18 +163,9 @@ const Layout = ({ children }) => {
           <Menu
             mode="horizontal"
             selectedKeys={[currentTopMenu]}
-            onClick={({ key }) => handleTopMenuClick(key)}
+            items={topMenuItems}
             style={{ border: 'none', background: 'transparent' }}
-          >
-            {topMenus.map(menu => {
-              const IconComponent = iconMap[menu.icon];
-              return (
-                <Menu.Item key={menu.key} icon={IconComponent && <IconComponent />}>
-                  {menu.label}
-                </Menu.Item>
-              );
-            })}
-          </Menu>
+          />
         </div>
         
         {/* 搜索框 */}
@@ -196,19 +210,9 @@ const Layout = ({ children }) => {
           <Menu
             mode="inline"
             selectedKeys={[currentSubMenu]}
-            onClick={handleSubMenuClick}
+            items={leftMenuItems}
             style={{ height: '100%', borderRight: 0 }}
-          >
-            {subMenus.map(subMenu => (
-              <Menu.SubMenu key={subMenu.key} title={subMenu.label}>
-                {subMenu.children?.map(item => (
-                  <Menu.Item key={item.key} onClick={() => navigate(item.path)}>
-                    {item.label}
-                  </Menu.Item>
-                ))}
-              </Menu.SubMenu>
-            ))}
-          </Menu>
+          />
         </Sider>
         
         {/* 主内容区域 */}

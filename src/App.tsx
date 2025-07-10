@@ -1,23 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 
-import Layout from './components/Layout';
-import Login from './pages/Login';
-import NotFound from './pages/NotFound';
-import { isPublicRoute, isNoMenuRoute } from './routers';
-import { addTab } from './models/tabs';
+import Layout from './components/Layout/index.jsx';
+import Login from './pages/Login/index.jsx';
+import NotFound from './pages/NotFound/index.jsx';
+import { isPublicRoute, isNoMenuRoute } from './routers/index.jsx';
+import { addTab } from './models/tabs.jsx';
+import { RootState } from './store';
 
 // 动态导入页面组件
-const SubAccountOrg = React.lazy(() => import('./pages/SubAccount/Org'));
-const SubAccountUser = React.lazy(() => import('./pages/SubAccount/User'));
-const SupplierBasic = React.lazy(() => import('./pages/Supplier/Basic'));
-const SupplierContact = React.lazy(() => import('./pages/Supplier/Contact'));
+const SubAccountOrg = React.lazy(() => import('./pages/SubAccount/Org/index.jsx'));
+const SubAccountUser = React.lazy(() => import('./pages/SubAccount/User/index.jsx'));
+const SupplierBasic = React.lazy(() => import('./pages/Supplier/Basic/index.jsx'));
+const SupplierContact = React.lazy(() => import('./pages/Supplier/Contact/index.jsx'));
 
 // 页面组件映射
-const pageComponents = {
+const pageComponents: Record<string, React.ComponentType> = {
   'SubAccount/Org': SubAccountOrg,
   'SubAccount/User': SubAccountUser,
   'Supplier/Basic': SupplierBasic,
@@ -25,18 +26,30 @@ const pageComponents = {
 };
 
 // 路由守卫组件
-const PrivateRoute = ({ children, path }) => {
-  const isLoggedIn = useSelector(state => state.user.isLoggedIn);
+interface PrivateRouteProps {
+  children: React.ReactNode;
+  path: string;
+}
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, path }) => {
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
   
   if (!isLoggedIn && !isPublicRoute(path)) {
     return <Navigate to="/login" replace />;
   }
   
-  return children;
+  return <>{children}</>;
 };
 
 // 页面组件包装器
-const PageWrapper = ({ component: Component, path, name, models = [] }) => {
+interface PageWrapperProps {
+  component: React.ComponentType;
+  path: string;
+  name: string;
+  models?: string[];
+}
+
+const PageWrapper: React.FC<PageWrapperProps> = ({ component: Component, path, name, models = [] }) => {
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -54,9 +67,38 @@ const PageWrapper = ({ component: Component, path, name, models = [] }) => {
   return <Component />;
 };
 
-function App() {
-  const isLoggedIn = useSelector(state => state.user.isLoggedIn);
+const App: React.FC = () => {
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
   const currentPath = window.location.pathname;
+  const [isInitialized, setIsInitialized] = useState(false);
+  
+  // 等待状态初始化完成
+  useEffect(() => {
+    // 延迟一点时间确保Redux Persist已经恢复状态
+    const timer = setTimeout(() => {
+      setIsInitialized(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  // 如果还没有初始化完成，显示加载状态
+  if (!isInitialized) {
+    return (
+      <ConfigProvider locale={zhCN}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100vh',
+          fontSize: '16px',
+          color: '#666'
+        }}>
+          正在加载...
+        </div>
+      </ConfigProvider>
+    );
+  }
   
   // 判断是否显示布局
   const shouldShowLayout = isLoggedIn && !isPublicRoute(currentPath) && !isNoMenuRoute(currentPath);
@@ -123,6 +165,6 @@ function App() {
       </Router>
     </ConfigProvider>
   );
-}
+};
 
 export default App; 

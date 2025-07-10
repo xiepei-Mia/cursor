@@ -10,8 +10,6 @@ import {
   removeRightTabs,
 } from '../../models/tabs';
 
-const { TabPane } = Tabs;
-
 const TabBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -80,26 +78,22 @@ const TabBar = () => {
     return menuItems;
   };
   
-  // 自定义标签页渲染
-  const renderTabPane = (tab) => {
-    return (
-      <TabPane
-        tab={
-          <div
-            onContextMenu={(e) => {
-              e.preventDefault();
-              const menu = handleContextMenu(e, tab);
-              // 这里可以显示右键菜单
-            }}
-          >
-            {tab.title}
-          </div>
-        }
-        key={tab.key}
-        closable={tab.closable}
-      />
-    );
-  };
+  // 标签页项
+  const tabItems = tabs.map(tab => ({
+    key: tab.key,
+    label: (
+      <div
+        onContextMenu={(e) => {
+          e.preventDefault();
+          const menu = handleContextMenu(e, tab);
+          // 这里可以显示右键菜单
+        }}
+      >
+        {tab.title}
+      </div>
+    ),
+    closable: tab.closable,
+  }));
   
   return (
     <div style={{ 
@@ -116,9 +110,8 @@ const TabBar = () => {
         size="small"
         style={{ margin: 0 }}
         tabBarStyle={{ margin: 0 }}
-      >
-        {tabs.map(tab => renderTabPane(tab))}
-      </Tabs>
+        items={tabItems}
+      />
     </div>
   );
 };
