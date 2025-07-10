@@ -87,6 +87,51 @@ code {
   background-color: #f5f5f5 !important;
 }
 
+/* 菜单悬浮和选中样式适配主题 */
+.ant-menu-item:hover,
+.ant-menu-submenu-title:hover {
+  background: var(--ant-color-bg-text-hover) !important;
+  color: var(--ant-color-text) !important;
+}
+
+.ant-menu-item-selected,
+.ant-menu-submenu-selected {
+  background: var(--ant-color-primary-bg) !important;
+  color: var(--ant-color-primary) !important;
+}
+
+/* 三级菜单选中高亮增强，带左侧高亮条 */
+.ant-menu-item-selected,
+.ant-menu-submenu-selected > .ant-menu-submenu-title {
+  background: linear-gradient(90deg, var(--ant-color-primary-bg) 90%, transparent 100%) !important;
+  color: var(--ant-color-primary) !important;
+  font-weight: 700;
+  border-radius: 6px !important;
+  position: relative;
+}
+.ant-menu-item-selected::before,
+.ant-menu-submenu-selected > .ant-menu-submenu-title::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px; bottom: 8px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--ant-color-primary);
+  display: block;
+}
+
+/* TabBar选中高亮增强 */
+.ant-tabs-tab-active {
+  background: var(--ant-color-primary-bg) !important;
+  color: var(--ant-color-primary) !important;
+  font-weight: 700 !important;
+  border-radius: 6px 6px 0 0 !important;
+}
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--ant-color-primary) !important;
+  font-weight: 700 !important;
+}
+
 /* 布局优化 */
 .ant-layout-sider {
   box-shadow: 2px 0 8px rgba(0,0,0,0.1);

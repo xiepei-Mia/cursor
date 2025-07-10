@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Dropdown } from 'antd';
+import { Tabs, Dropdown, theme } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -14,6 +14,7 @@ const TabBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { token } = theme.useToken();
   
   const { tabs, activeKey } = useSelector(state => state.tabs);
   
@@ -88,6 +89,7 @@ const TabBar = () => {
           const menu = handleContextMenu(e, tab);
           // 这里可以显示右键菜单
         }}
+        style={{ color: token.colorText }}
       >
         {tab.title}
       </div>
@@ -96,13 +98,15 @@ const TabBar = () => {
   }));
   
   return (
-    <div style={{ 
-      background: '#fff', 
-      borderBottom: '1px solid #f0f0f0',
-      padding: '0 16px',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-      zIndex: 10,
-    }}>
+    <div
+      style={{
+        background: token.colorBgContainer,
+        borderBottom: `1px solid ${token.colorBorderSecondary}`,
+        padding: '0 16px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        zIndex: 10,
+      }}
+    >
       <Tabs
         type="editable-card"
         activeKey={activeKey}
@@ -114,6 +118,7 @@ const TabBar = () => {
         tabBarStyle={{ 
           margin: 0,
           padding: '8px 0 0 0',
+          color: token.colorText,
         }}
         items={tabItems}
       />

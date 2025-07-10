@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Input, Dropdown, Space, Avatar, Button } from 'antd';
+import { Layout as AntLayout, Menu, Input, Dropdown, Space, Avatar, Button, theme } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -43,6 +43,7 @@ const Layout = ({ children }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { token } = theme.useToken();
   
   const {
     topMenus,
@@ -53,7 +54,7 @@ const Layout = ({ children }) => {
   } = useSelector(state => state.menu);
   
   const { userInfo } = useSelector(state => state.user);
-  const { theme } = useSelector(state => state.theme);
+  const { theme: themeMode } = useSelector(state => state.theme);
   const { locale } = useSelector(state => state.locale);
   
   const t = createT(locale);
@@ -157,12 +158,12 @@ const Layout = ({ children }) => {
   const userMenuItems = [
     {
       key: 'profile',
-      icon: <UserOutlined />,
+      icon: <UserOutlined style={{ color: token.colorText }} />,
       label: t('user.profile'),
     },
     {
       key: 'settings',
-      icon: <SettingOutlined />,
+      icon: <SettingOutlined style={{ color: token.colorText }} />,
       label: t('user.settings'),
     },
     {
@@ -170,12 +171,12 @@ const Layout = ({ children }) => {
     },
     {
       key: 'theme',
-      icon: <BulbOutlined />,
+      icon: <BulbOutlined style={{ color: token.colorText }} />,
       label: t('user.theme'),
     },
     {
       key: 'language',
-      icon: <GlobalOutlined />,
+      icon: <GlobalOutlined style={{ color: token.colorText }} />,
       label: t('user.language'),
     },
     {
@@ -183,7 +184,7 @@ const Layout = ({ children }) => {
     },
     {
       key: 'logout',
-      icon: <LogoutOutlined />,
+      icon: <LogoutOutlined style={{ color: token.colorText }} />,
       label: t('user.logout'),
     },
   ];
@@ -195,7 +196,7 @@ const Layout = ({ children }) => {
       <div>
         <div>{item.label}</div>
         {item.parentPath && (
-          <div style={{ fontSize: '12px', color: '#999' }}>
+          <div style={{ fontSize: '12px', color: token.colorTextDescription }}>
             {item.parentPath}
           </div>
         )}
@@ -209,9 +210,10 @@ const Layout = ({ children }) => {
     const IconComponent = iconMap[menu.icon];
     return {
       key: menu.key,
-      icon: IconComponent && <IconComponent />,
+      icon: IconComponent && <IconComponent style={{ color: token.colorText }} />,
       label: t(`menu.${menu.key}`) !== `menu.${menu.key}` ? t(`menu.${menu.key}`) : menu.label,
       onClick: () => handleTopMenuClick(menu.key),
+      style: { color: token.colorText },
     };
   });
 
@@ -228,21 +230,22 @@ const Layout = ({ children }) => {
   }));
   
   return (
-    <AntLayout style={{ height: '100vh', overflow: 'hidden' }}>
+    <AntLayout style={{ height: '100vh', overflow: 'hidden', background: token.colorBgLayout }}>
       {/* 顶部导航 */}
       <Header style={{ 
-        background: '#fff', 
+        background: token.colorBgContainer,
         padding: '0 24px', 
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'space-between',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        boxShadow: token.boxShadow,
         zIndex: 1000,
         height: '64px',
         flexShrink: 0,
+        color: token.colorText,
       }}>
         {/* Logo */}
-        <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#1890ff' }}>
+        <div style={{ fontSize: '18px', fontWeight: 'bold', color: token.colorPrimary }}>
           {t('app.title')}
         </div>
         
@@ -252,7 +255,7 @@ const Layout = ({ children }) => {
             mode="horizontal"
             selectedKeys={[currentTopMenu]}
             items={topMenuItems}
-            style={{ border: 'none', background: 'transparent' }}
+            style={{ border: 'none', background: 'transparent', color: token.colorText }}
           />
         </div>
         
@@ -266,10 +269,10 @@ const Layout = ({ children }) => {
           >
             <Input
               placeholder={t('menu.search')}
-              prefix={<SearchOutlined />}
+              prefix={<SearchOutlined style={{ color: token.colorTextDescription }} />}
               value={searchKeyword}
               onChange={handleMenuSearch}
-              style={{ width: 200 }}
+              style={{ width: 200, background: token.colorBgContainer, color: token.colorText }}
               allowClear
             />
           </Dropdown>
@@ -279,9 +282,10 @@ const Layout = ({ children }) => {
         <div style={{ marginLeft: '16px' }}>
           <Button
             type="text"
-            icon={<BulbOutlined />}
+            icon={<BulbOutlined style={{ color: token.colorText }} />}
             onClick={handleThemeToggle}
-            title={theme === 'light' ? t('theme.dark') : t('theme.light')}
+            title={themeMode === 'light' ? t('theme.dark') : t('theme.light')}
+            style={{ color: token.colorText }}
           />
         </div>
         
@@ -289,24 +293,25 @@ const Layout = ({ children }) => {
         <div style={{ marginLeft: '8px' }}>
           <Button
             type="text"
-            icon={<GlobalOutlined />}
+            icon={<GlobalOutlined style={{ color: token.colorText }} />}
             onClick={handleLanguageToggle}
             title={locale === 'zh_CN' ? 'English' : '中文'}
+            style={{ color: token.colorText }}
           />
         </div>
         
         {/* 用户信息 */}
         <div style={{ marginLeft: '16px' }}>
           <Dropdown menu={{ items: userMenuItems }} onClick={handleUserMenuClick}>
-            <Space style={{ cursor: 'pointer' }}>
-              <Avatar icon={<UserOutlined />} />
-              <span>{userInfo?.name || t('user.profile')}</span>
+            <Space style={{ cursor: 'pointer', color: token.colorText }}>
+              <Avatar icon={<UserOutlined style={{ color: token.colorText }} />} style={{ background: token.colorBgContainer, color: token.colorText }} />
+              <span style={{ color: token.colorText }}>{userInfo?.name || t('user.profile')}</span>
             </Space>
           </Dropdown>
         </div>
       </Header>
       
-      <AntLayout style={{ height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
+      <AntLayout style={{ height: 'calc(100vh - 64px)', overflow: 'hidden', background: token.colorBgLayout }}>
         {/* 左侧菜单 */}
         <Sider
           width={200}
@@ -314,8 +319,8 @@ const Layout = ({ children }) => {
           collapsed={collapsed}
           onCollapse={setCollapsed}
           style={{ 
-            background: '#fff',
-            borderRight: '1px solid #f0f0f0',
+            background: token.colorBgContainer,
+            borderRight: `1px solid ${token.colorBorderSecondary}`,
             overflow: 'hidden',
           }}
         >
@@ -333,6 +338,8 @@ const Layout = ({ children }) => {
                 height: '100%', 
                 borderRight: 0,
                 paddingTop: '8px',
+                background: token.colorBgContainer,
+                color: token.colorText,
               }}
               onOpenChange={handleMenuOpenChange}
             />
@@ -345,6 +352,7 @@ const Layout = ({ children }) => {
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
+          background: token.colorBgLayout,
         }}>
           {/* 标签页 */}
           <div style={{ flexShrink: 0 }}>
@@ -356,11 +364,12 @@ const Layout = ({ children }) => {
             flex: 1,
             margin: '16px',
             padding: '16px', 
-            background: '#fff',
+            background: token.colorBgContainer,
             borderRadius: '6px',
             overflowY: 'auto',
             overflowX: 'hidden',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            boxShadow: token.boxShadow,
+            color: token.colorText,
           }}>
             {children}
           </Content>
