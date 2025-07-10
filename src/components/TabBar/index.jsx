@@ -100,6 +100,8 @@ const TabBar = () => {
       background: '#fff', 
       borderBottom: '1px solid #f0f0f0',
       padding: '0 16px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+      zIndex: 10,
     }}>
       <Tabs
         type="editable-card"
@@ -109,7 +111,10 @@ const TabBar = () => {
         hideAdd
         size="small"
         style={{ margin: 0 }}
-        tabBarStyle={{ margin: 0 }}
+        tabBarStyle={{ 
+          margin: 0,
+          padding: '8px 0 0 0',
+        }}
         items={tabItems}
       />
     </div>

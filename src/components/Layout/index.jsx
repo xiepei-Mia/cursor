@@ -142,7 +142,7 @@ const Layout = ({ children }) => {
   }));
   
   return (
-    <AntLayout style={{ height: '100vh' }}>
+    <AntLayout style={{ height: '100vh', overflow: 'hidden' }}>
       {/* 顶部导航 */}
       <Header style={{ 
         background: '#fff', 
@@ -152,6 +152,8 @@ const Layout = ({ children }) => {
         justifyContent: 'space-between',
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         zIndex: 1000,
+        height: '64px',
+        flexShrink: 0,
       }}>
         {/* Logo */}
         <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#1890ff' }}>
@@ -198,35 +200,59 @@ const Layout = ({ children }) => {
         </div>
       </Header>
       
-      <AntLayout>
+      <AntLayout style={{ height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
         {/* 左侧菜单 */}
         <Sider
           width={200}
           collapsible
           collapsed={collapsed}
           onCollapse={setCollapsed}
-          style={{ background: '#fff' }}
+          style={{ 
+            background: '#fff',
+            borderRight: '1px solid #f0f0f0',
+            overflow: 'hidden',
+          }}
         >
-          <Menu
-            mode="inline"
-            selectedKeys={[currentSubMenu]}
-            items={leftMenuItems}
-            style={{ height: '100%', borderRight: 0 }}
-          />
+          <div style={{ 
+            height: '100%', 
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}>
+            <Menu
+              mode="inline"
+              selectedKeys={[currentSubMenu]}
+              items={leftMenuItems}
+              style={{ 
+                height: '100%', 
+                borderRight: 0,
+                paddingTop: '8px',
+              }}
+            />
+          </div>
         </Sider>
         
         {/* 主内容区域 */}
-        <AntLayout style={{ padding: '0 0 0 0' }}>
+        <AntLayout style={{ 
+          height: '100%',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
           {/* 标签页 */}
-          <TabBar />
+          <div style={{ flexShrink: 0 }}>
+            <TabBar />
+          </div>
           
           {/* 页面内容 */}
           <Content style={{ 
-            margin: '0 16px 16px 16px', 
+            flex: 1,
+            margin: '16px',
             padding: '16px', 
             background: '#fff',
             borderRadius: '6px',
-            minHeight: 'calc(100vh - 200px)',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
           }}>
             {children}
           </Content>

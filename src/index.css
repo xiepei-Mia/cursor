@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 code {
@@ -14,39 +15,114 @@ code {
 
 /* 自定义滚动条样式 */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f5f5f5;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
+  background: #d9d9d9;
+  border-radius: 4px;
+  border: 1px solid #f5f5f5;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #bfbfbf;
+}
+
+::-webkit-scrollbar-corner {
+  background: #f5f5f5;
 }
 
 /* 标签页样式 */
 .ant-tabs-tab {
   padding: 8px 16px !important;
+  transition: all 0.3s ease;
+}
+
+.ant-tabs-tab:hover {
+  background-color: #f5f5f5;
 }
 
 .ant-tabs-tab-btn {
   font-size: 14px;
+  font-weight: 500;
+}
+
+.ant-tabs-tab-active {
+  background-color: #e6f7ff !important;
 }
 
 /* 菜单样式 */
 .ant-menu-item {
   height: 40px !important;
   line-height: 40px !important;
+  margin: 4px 8px !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease;
+}
+
+.ant-menu-item:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.ant-menu-item-selected {
+  background-color: #e6f7ff !important;
+  color: #1890ff !important;
 }
 
 .ant-menu-submenu-title {
   height: 40px !important;
   line-height: 40px !important;
+  margin: 4px 8px !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease;
+}
+
+.ant-menu-submenu-title:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* 布局优化 */
+.ant-layout-sider {
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+}
+
+.ant-layout-header {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 表单样式优化 */
+.ant-form-item {
+  margin-bottom: 24px;
+}
+
+.ant-input, .ant-select-selector, .ant-picker {
+  border-radius: 6px;
+}
+
+.ant-btn {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* 卡片样式 */
+.ant-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 表格样式 */
+.ant-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #fafafa;
+  font-weight: 600;
 } 
