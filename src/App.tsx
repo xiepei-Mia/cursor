@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, theme } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
+import enUS from 'antd/locale/en_US';
 
 import Layout from './components/Layout/index.jsx';
 import Login from './pages/Login/index.jsx';
@@ -69,6 +70,8 @@ const PageWrapper: React.FC<PageWrapperProps> = ({ component: Component, path, n
 
 const App: React.FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+  const { theme: themeMode, primaryColor, borderRadius, compact } = useSelector((state: RootState) => state.theme);
+  const { locale } = useSelector((state: RootState) => state.locale);
   const currentPath = window.location.pathname;
   const [isInitialized, setIsInitialized] = useState(false);
   
@@ -85,7 +88,7 @@ const App: React.FC = () => {
   // 如果还没有初始化完成，显示加载状态
   if (!isInitialized) {
     return (
-      <ConfigProvider locale={zhCN}>
+      <ConfigProvider locale={locale === 'zh_CN' ? zhCN : enUS}>
         <div style={{ 
           display: 'flex', 
           justifyContent: 'center', 
@@ -103,8 +106,25 @@ const App: React.FC = () => {
   // 判断是否显示布局
   const shouldShowLayout = isLoggedIn && !isPublicRoute(currentPath) && !isNoMenuRoute(currentPath);
   
+  // 主题配置
+  const themeConfig = {
+    algorithm: themeMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
+    token: {
+      colorPrimary: primaryColor,
+      borderRadius: borderRadius,
+      ...(compact && {
+        padding: 8,
+        margin: 8,
+        fontSize: 12,
+      }),
+    },
+  };
+  
   return (
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider 
+      locale={locale === 'zh_CN' ? zhCN : enUS}
+      theme={themeConfig}
+    >
       <Router>
         <div className="App">
           {shouldShowLayout ? (

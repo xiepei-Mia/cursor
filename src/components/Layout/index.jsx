@@ -1,42 +1,100 @@
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Input, Dropdown, Avatar, Space } from 'antd';
+import { Layout as AntLayout, Menu, Input, Dropdown, Space, Avatar, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   UserOutlined,
+  SettingOutlined,
+  LogoutOutlined,
+  SearchOutlined,
+  UserOutlined as UserIcon,
   ShoppingCartOutlined,
   FileTextOutlined,
-  SearchOutlined,
-  LogoutOutlined,
-  SettingOutlined,
+  GlobalOutlined,
+  BulbOutlined,
 } from '@ant-design/icons';
-import { useNavigate, useLocation } from 'react-router-dom';
-
-import TabBar from '../TabBar';
-import { setCurrentTopMenu, setCurrentSubMenu, setSearchKeyword } from '../../models/menu';
+import {
+  setCurrentTopMenu,
+  setCurrentSubMenu,
+  setSearchKeyword,
+} from '../../models/menu';
 import { logout } from '../../models/user';
+import { toggleTheme } from '../../models/theme';
+import { setLocale } from '../../models/locale';
+import { createT } from '../../utils/i18n';
+import TabBar from '../TabBar';
+import ThemeSettings from '../ThemeSettings';
+import LanguageSettings from '../LanguageSettings';
 
 const { Header, Sider, Content } = AntLayout;
 
 // 图标映射
 const iconMap = {
-  UserOutlined: UserOutlined,
-  ShoppingCartOutlined: ShoppingCartOutlined,
-  FileTextOutlined: FileTextOutlined,
+  UserOutlined: UserIcon,
+  ShoppingCartOutlined,
+  FileTextOutlined,
 };
 
 const Layout = ({ children }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [menuOpenKeys, setMenuOpenKeys] = useState([]);
+  const [themeSettingsVisible, setThemeSettingsVisible] = useState(false);
+  const [languageSettingsVisible, setLanguageSettingsVisible] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   
-  const [collapsed, setCollapsed] = useState(false);
+  const {
+    topMenus,
+    currentTopMenu,
+    currentSubMenu,
+    searchKeyword,
+    filteredMenus,
+  } = useSelector(state => state.menu);
   
-  const { topMenus, currentTopMenu, currentSubMenu, searchKeyword, filteredMenus } = useSelector(state => state.menu);
   const { userInfo } = useSelector(state => state.user);
+  const { theme } = useSelector(state => state.theme);
+  const { locale } = useSelector(state => state.locale);
+  
+  const t = createT(locale);
   
   // 获取当前顶级菜单的子菜单
   const currentTopMenuData = topMenus.find(menu => menu.key === currentTopMenu);
   const subMenus = currentTopMenuData?.children || [];
+  
+  // 根据当前路径找到对应的菜单项
+  const findCurrentMenuKeys = () => {
+    const currentPath = location.pathname;
+    let selectedKeys = [currentSubMenu];
+    let openKeys = [...menuOpenKeys];
+    
+    // 遍历菜单结构找到当前路径对应的菜单项
+    for (const topMenu of topMenus) {
+      for (const subMenu of topMenu.children || []) {
+        for (const item of subMenu.children || []) {
+          if (item.path === currentPath) {
+            selectedKeys = [item.key]; // 选中三级菜单项
+            // 确保对应的二级菜单展开
+            if (!openKeys.includes(subMenu.key)) {
+              openKeys.push(subMenu.key);
+            }
+            break;
+          }
+        }
+        if (selectedKeys.length > 1) break;
+      }
+      if (selectedKeys.length > 1) break;
+    }
+    
+    return { selectedKeys, openKeys };
+  };
+  
+  const { selectedKeys, openKeys } = findCurrentMenuKeys();
+  
+  // 处理菜单展开/收起
+  const handleMenuOpenChange = (keys) => {
+    setMenuOpenKeys(keys);
+  };
   
   // 处理顶级菜单点击
   const handleTopMenuClick = (menuKey) => {
@@ -77,7 +135,22 @@ const Layout = ({ children }) => {
     if (key === 'logout') {
       dispatch(logout());
       navigate('/login');
+    } else if (key === 'theme') {
+      setThemeSettingsVisible(true);
+    } else if (key === 'language') {
+      setLanguageSettingsVisible(true);
     }
+  };
+  
+  // 处理主题切换
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
+  };
+  
+  // 处理语言切换
+  const handleLanguageToggle = () => {
+    const newLocale = locale === 'zh_CN' ? 'en_US' : 'zh_CN';
+    dispatch(setLocale(newLocale));
   };
   
   // 用户菜单项
@@ -85,12 +158,25 @@ const Layout = ({ children }) => {
     {
       key: 'profile',
       icon: <UserOutlined />,
-      label: '个人资料',
+      label: t('user.profile'),
     },
     {
       key: 'settings',
       icon: <SettingOutlined />,
-      label: '系统设置',
+      label: t('user.settings'),
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: 'theme',
+      icon: <BulbOutlined />,
+      label: t('user.theme'),
+    },
+    {
+      key: 'language',
+      icon: <GlobalOutlined />,
+      label: t('user.language'),
     },
     {
       type: 'divider',
@@ -98,7 +184,7 @@ const Layout = ({ children }) => {
     {
       key: 'logout',
       icon: <LogoutOutlined />,
-      label: '退出登录',
+      label: t('user.logout'),
     },
   ];
   
@@ -124,7 +210,7 @@ const Layout = ({ children }) => {
     return {
       key: menu.key,
       icon: IconComponent && <IconComponent />,
-      label: menu.label,
+      label: t(`menu.${menu.key}`) !== `menu.${menu.key}` ? t(`menu.${menu.key}`) : menu.label,
       onClick: () => handleTopMenuClick(menu.key),
     };
   });
@@ -132,11 +218,11 @@ const Layout = ({ children }) => {
   // 左侧菜单项
   const leftMenuItems = subMenus.map(subMenu => ({
     key: subMenu.key,
-    label: subMenu.label,
+    label: t(`menu.${subMenu.key}`) !== `menu.${subMenu.key}` ? t(`menu.${subMenu.key}`) : subMenu.label,
     onClick: () => handleSubMenuClick({ key: subMenu.key }),
     children: subMenu.children?.map(item => ({
       key: item.key,
-      label: item.label,
+      label: t(`menu.${item.key}`) !== `menu.${item.key}` ? t(`menu.${item.key}`) : item.label,
       onClick: () => navigate(item.path),
     })),
   }));
@@ -157,7 +243,7 @@ const Layout = ({ children }) => {
       }}>
         {/* Logo */}
         <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#1890ff' }}>
-          采购系统供应商门户
+          {t('app.title')}
         </div>
         
         {/* 顶部菜单 */}
@@ -179,7 +265,7 @@ const Layout = ({ children }) => {
             trigger={['click']}
           >
             <Input
-              placeholder="搜索菜单..."
+              placeholder={t('menu.search')}
               prefix={<SearchOutlined />}
               value={searchKeyword}
               onChange={handleMenuSearch}
@@ -189,12 +275,32 @@ const Layout = ({ children }) => {
           </Dropdown>
         </div>
         
+        {/* 主题切换按钮 */}
+        <div style={{ marginLeft: '16px' }}>
+          <Button
+            type="text"
+            icon={<BulbOutlined />}
+            onClick={handleThemeToggle}
+            title={theme === 'light' ? t('theme.dark') : t('theme.light')}
+          />
+        </div>
+        
+        {/* 语言切换按钮 */}
+        <div style={{ marginLeft: '8px' }}>
+          <Button
+            type="text"
+            icon={<GlobalOutlined />}
+            onClick={handleLanguageToggle}
+            title={locale === 'zh_CN' ? 'English' : '中文'}
+          />
+        </div>
+        
         {/* 用户信息 */}
-        <div style={{ marginLeft: '24px' }}>
+        <div style={{ marginLeft: '16px' }}>
           <Dropdown menu={{ items: userMenuItems }} onClick={handleUserMenuClick}>
             <Space style={{ cursor: 'pointer' }}>
               <Avatar icon={<UserOutlined />} />
-              <span>{userInfo?.name || '用户'}</span>
+              <span>{userInfo?.name || t('user.profile')}</span>
             </Space>
           </Dropdown>
         </div>
@@ -220,13 +326,15 @@ const Layout = ({ children }) => {
           }}>
             <Menu
               mode="inline"
-              selectedKeys={[currentSubMenu]}
+              selectedKeys={selectedKeys}
+              openKeys={openKeys}
               items={leftMenuItems}
               style={{ 
                 height: '100%', 
                 borderRight: 0,
                 paddingTop: '8px',
               }}
+              onOpenChange={handleMenuOpenChange}
             />
           </div>
         </Sider>
@@ -258,6 +366,18 @@ const Layout = ({ children }) => {
           </Content>
         </AntLayout>
       </AntLayout>
+      
+      {/* 主题设置弹窗 */}
+      <ThemeSettings
+        visible={themeSettingsVisible}
+        onCancel={() => setThemeSettingsVisible(false)}
+      />
+      
+      {/* 语言设置弹窗 */}
+      <LanguageSettings
+        visible={languageSettingsVisible}
+        onCancel={() => setLanguageSettingsVisible(false)}
+      />
     </AntLayout>
   );
 };

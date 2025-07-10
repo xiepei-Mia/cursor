@@ -1,18 +1,22 @@
 import React from 'react';
 import { Card, Form, Input, Button, Row, Col, Select, DatePicker } from 'antd';
+import { useSelector } from 'react-redux';
+import { createT } from '../../../utils/i18n';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 const SupplierBasic = () => {
   const [form] = Form.useForm();
+  const { locale } = useSelector(state => state.locale);
+  const t = createT(locale);
 
   const onFinish = (values) => {
     console.log('提交的值:', values);
   };
 
   return (
-    <Card title="供应商基本信息">
+    <Card title={t('page.basic.title')}>
       <Form
         form={form}
         layout="vertical"
@@ -26,19 +30,19 @@ const SupplierBasic = () => {
           <Col span={12}>
             <Form.Item
               name="name"
-              label="供应商名称"
-              rules={[{ required: true, message: '请输入供应商名称' }]}
+              label={t('form.supplier.name')}
+              rules={[{ required: true, message: `请输入${t('form.supplier.name')}` }]}
             >
-              <Input placeholder="请输入供应商名称" />
+              <Input placeholder={`请输入${t('form.supplier.name')}`} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="code"
-              label="供应商代码"
-              rules={[{ required: true, message: '请输入供应商代码' }]}
+              label={t('form.supplier.code')}
+              rules={[{ required: true, message: `请输入${t('form.supplier.code')}` }]}
             >
-              <Input placeholder="请输入供应商代码" />
+              <Input placeholder={`请输入${t('form.supplier.code')}`} />
             </Form.Item>
           </Col>
         </Row>
@@ -47,25 +51,25 @@ const SupplierBasic = () => {
           <Col span={12}>
             <Form.Item
               name="type"
-              label="供应商类型"
-              rules={[{ required: true, message: '请选择供应商类型' }]}
+              label={t('form.supplier.type')}
+              rules={[{ required: true, message: `请选择${t('form.supplier.type')}` }]}
             >
-              <Select placeholder="请选择供应商类型">
-                <Option value="manufacturer">制造商</Option>
-                <Option value="distributor">经销商</Option>
-                <Option value="service">服务商</Option>
+              <Select placeholder={`请选择${t('form.supplier.type')}`}>
+                <Option value="manufacturer">{t('option.manufacturer')}</Option>
+                <Option value="distributor">{t('option.distributor')}</Option>
+                <Option value="service">{t('option.service')}</Option>
               </Select>
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="status"
-              label="状态"
-              rules={[{ required: true, message: '请选择状态' }]}
+              label={t('form.supplier.status')}
+              rules={[{ required: true, message: `请选择${t('form.supplier.status')}` }]}
             >
-              <Select placeholder="请选择状态">
-                <Option value="active">启用</Option>
-                <Option value="inactive">禁用</Option>
+              <Select placeholder={`请选择${t('form.supplier.status')}`}>
+                <Option value="active">{t('option.active')}</Option>
+                <Option value="inactive">{t('option.inactive')}</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -75,19 +79,19 @@ const SupplierBasic = () => {
           <Col span={12}>
             <Form.Item
               name="contactPerson"
-              label="联系人"
-              rules={[{ required: true, message: '请输入联系人' }]}
+              label={t('form.supplier.contactPerson')}
+              rules={[{ required: true, message: `请输入${t('form.supplier.contactPerson')}` }]}
             >
-              <Input placeholder="请输入联系人" />
+              <Input placeholder={`请输入${t('form.supplier.contactPerson')}`} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="contactPhone"
-              label="联系电话"
-              rules={[{ required: true, message: '请输入联系电话' }]}
+              label={t('form.supplier.contactPhone')}
+              rules={[{ required: true, message: `请输入${t('form.supplier.contactPhone')}` }]}
             >
-              <Input placeholder="请输入联系电话" />
+              <Input placeholder={`请输入${t('form.supplier.contactPhone')}`} />
             </Form.Item>
           </Col>
         </Row>
@@ -96,21 +100,21 @@ const SupplierBasic = () => {
           <Col span={12}>
             <Form.Item
               name="email"
-              label="邮箱"
+              label={t('form.supplier.email')}
               rules={[
-                { required: true, message: '请输入邮箱' },
+                { required: true, message: `请输入${t('form.supplier.email')}` },
                 { type: 'email', message: '请输入正确的邮箱格式' }
               ]}
             >
-              <Input placeholder="请输入邮箱" />
+              <Input placeholder={`请输入${t('form.supplier.email')}`} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="website"
-              label="网站"
+              label={t('form.supplier.website')}
             >
-              <Input placeholder="请输入网站地址" />
+              <Input placeholder={`请输入${t('form.supplier.website')}`} />
             </Form.Item>
           </Col>
         </Row>
@@ -119,10 +123,10 @@ const SupplierBasic = () => {
           <Col span={24}>
             <Form.Item
               name="address"
-              label="地址"
-              rules={[{ required: true, message: '请输入地址' }]}
+              label={t('form.supplier.address')}
+              rules={[{ required: true, message: `请输入${t('form.supplier.address')}` }]}
             >
-              <TextArea rows={3} placeholder="请输入详细地址" />
+              <TextArea rows={3} placeholder={`请输入${t('form.supplier.address')}`} />
             </Form.Item>
           </Col>
         </Row>
@@ -131,17 +135,17 @@ const SupplierBasic = () => {
           <Col span={12}>
             <Form.Item
               name="businessLicense"
-              label="营业执照号"
+              label={t('form.supplier.businessLicense')}
             >
-              <Input placeholder="请输入营业执照号" />
+              <Input placeholder={`请输入${t('form.supplier.businessLicense')}`} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="taxNumber"
-              label="税务登记号"
+              label={t('form.supplier.taxNumber')}
             >
-              <Input placeholder="请输入税务登记号" />
+              <Input placeholder={`请输入${t('form.supplier.taxNumber')}`} />
             </Form.Item>
           </Col>
         </Row>
@@ -150,17 +154,17 @@ const SupplierBasic = () => {
           <Col span={12}>
             <Form.Item
               name="establishDate"
-              label="成立日期"
+              label={t('form.supplier.establishDate')}
             >
-              <DatePicker style={{ width: '100%' }} placeholder="请选择成立日期" />
+              <DatePicker style={{ width: '100%' }} placeholder={`请选择${t('form.supplier.establishDate')}`} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
               name="registeredCapital"
-              label="注册资本"
+              label={t('form.supplier.registeredCapital')}
             >
-              <Input placeholder="请输入注册资本" />
+              <Input placeholder={`请输入${t('form.supplier.registeredCapital')}`} />
             </Form.Item>
           </Col>
         </Row>
@@ -169,9 +173,9 @@ const SupplierBasic = () => {
           <Col span={24}>
             <Form.Item
               name="description"
-              label="公司简介"
+              label={t('form.supplier.description')}
             >
-              <TextArea rows={4} placeholder="请输入公司简介" />
+              <TextArea rows={4} placeholder={`请输入${t('form.supplier.description')}`} />
             </Form.Item>
           </Col>
         </Row>
@@ -198,9 +202,9 @@ const SupplierBasic = () => {
               label="企业规模"
             >
               <Select placeholder="请选择企业规模">
-                <Option value="small">小型企业</Option>
-                <Option value="medium">中型企业</Option>
-                <Option value="large">大型企业</Option>
+                <Option value="small">{t('option.small')}</Option>
+                <Option value="medium">{t('option.medium')}</Option>
+                <Option value="large">{t('option.large')}</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -336,10 +340,10 @@ const SupplierBasic = () => {
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            保存
+            {t('app.save')}
           </Button>
           <Button style={{ marginLeft: 8 }}>
-            重置
+            {t('app.reset')}
           </Button>
         </Form.Item>
       </Form>
